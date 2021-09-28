@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 
-#root {
+body {
   background-color: rgb(229, 231, 235);
 }
 
@@ -23,4 +23,9 @@
 .card {
   margin-left: 0.625rem;
   margin-right: 0.625rem;
+}
+
+.pagination-div {
+  text-align: center;
+  padding: 2rem;
 }
