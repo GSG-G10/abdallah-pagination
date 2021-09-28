@@ -1,5 +1,6 @@
 import React,{ useState, useEffect } from 'react';
 import { Card, Pagination, Avatar } from 'antd';
+import LoadingCards from './components/loadingCards';
 import './App.css';
 import 'antd/dist/antd.css';
 
@@ -10,6 +11,7 @@ function App() {
 
   const [cards, setCards] = useState([]);
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(100);
   const [loading, setLoading] = useState(true);
 
@@ -27,26 +29,22 @@ function App() {
 );
 
   useEffect(() => {
-    fetch(`https://api.unsplash.com/search/collections?page=${page}&query=cat&client_id=TwvKJh4prHYcX8rjZdWBMDAHv0-h5ceFoB0Gg3irklI`)
-    .then(res => res.json())
-    .then(data => {
-      setCards(data.results);
-      setTotal(data.total_pages);
-      setLoading(false);
-    });
-  }, []);
-
-  function changePage(page, pageSize){
-    setLoading(true);
-
     fetch(`https://api.unsplash.com/search/collections?page=${page}&per_page=${pageSize}&query=cat&client_id=TwvKJh4prHYcX8rjZdWBMDAHv0-h5ceFoB0Gg3irklI`)
     .then(res => res.json())
     .then(data => {
       setCards(data.results);
       setTotal(data.total_pages);
       setLoading(false);
-
+    }).catch(err => {
+      console.log(err);
+      setLoading(false);
     });
+  }, [page, pageSize]);
+
+  function changePage(page, pageSize){
+    setLoading(true);
+    setPage(page);
+    setPageSize(pageSize);
   }
 
   return (
@@ -54,97 +52,14 @@ function App() {
 
       {
         !loading ?
-        <div>
-          <div className="cards">
+        
+        <div className="cards">
           {cardsList}
-          </div>
         </div>
         
         :
 
-        <div className="cards">
-          <Card style={{ width: "30%", marginTop: 16 }} loading={true}>
-              <Meta
-                avatar={
-                  <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-                }
-                title="Card title"
-                description="This is the description"
-              />
-            </Card>
-          <Card style={{ width: "30%", marginTop: 16 }} loading={true}>
-            <Meta
-              avatar={
-                <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-              }
-              title="Card title"
-              description="This is the description"
-            />
-          </Card>
-          <Card style={{ width: "30%", marginTop: 16 }} loading={true}>
-              <Meta
-                avatar={
-                  <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-                }
-                title="Card title"
-                description="This is the description"
-              />
-            </Card>
-          <Card style={{ width: "30%", marginTop: 16 }} loading={true}>
-              <Meta
-                avatar={
-                  <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-                }
-                title="Card title"
-                description="This is the description"
-              />
-            </Card>
-          <Card style={{ width: "30%", marginTop: 16 }} loading={true}>
-            <Meta
-              avatar={
-                <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-              }
-              title="Card title"
-              description="This is the description"
-            />
-          </Card>
-          <Card style={{ width: "30%", marginTop: 16 }} loading={true}>
-            <Meta
-              avatar={
-                <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-              }
-              title="Card title"
-              description="This is the description"
-            />
-          </Card>
-          <Card style={{ width: "30%", marginTop: 16 }} loading={true}>
-              <Meta
-                avatar={
-                  <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-                }
-                title="Card title"
-                description="This is the description"
-              />
-            </Card>
-          <Card style={{ width: "30%", marginTop: 16 }} loading={true}>
-            <Meta
-              avatar={
-                <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-              }
-              title="Card title"
-              description="This is the description"
-            />
-          </Card>
-          <Card style={{ width: "30%", marginTop: 16 }} loading={true}>
-              <Meta
-                avatar={
-                  <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-                }
-                title="Card title"
-                description="This is the description"
-              />
-            </Card>
-        </div>
+        <LoadingCards/>
 
       }
 
