@@ -1,10 +1,11 @@
 import React,{ useState, useEffect } from 'react';
-import { Card, Pagination, Avatar } from 'antd';
+import { Card, Pagination, Empty, Input } from 'antd';
 import LoadingCards from './components/loadingCards';
 import './App.css';
 import 'antd/dist/antd.css';
 
 const { Meta } = Card;
+const {Search} = Input;
 
 
 function App() {
@@ -14,7 +15,7 @@ function App() {
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(100);
   const [loading, setLoading] = useState(true);
-
+  const [search, setSearch] = useState("");
 
   const cardsList = cards.map((card) => 
           <Card 
@@ -29,17 +30,21 @@ function App() {
 );
 
   useEffect(() => {
-    fetch(`https://api.unsplash.com/search/collections?page=${page}&per_page=${pageSize}&query=cat&client_id=TwvKJh4prHYcX8rjZdWBMDAHv0-h5ceFoB0Gg3irklI`)
-    .then(res => res.json())
-    .then(data => {
-      setCards(data.results);
-      setTotal(data.total_pages);
+    if(search){
+      fetch(`https://api.unsplash.com/search/collections?page=${page}&per_page=${pageSize}&query=${search}&client_id=TwvKJh4prHYcX8rjZdWBMDAHv0-h5ceFoB0Gg3irklI`)
+      .then(res => res.json())
+      .then(data => {
+        setCards(data.results);
+        setTotal(data.total_pages);
+        setLoading(false);
+      }).catch(err => {
+        console.log(err);
+        setLoading(false);
+      });
+    }else{
       setLoading(false);
-    }).catch(err => {
-      console.log(err);
-      setLoading(false);
-    });
-  }, [page, pageSize]);
+    }
+  }, [page, pageSize, search]);
 
   function changePage(page, pageSize){
     setLoading(true);
@@ -47,15 +52,36 @@ function App() {
     setPageSize(pageSize);
   }
 
+  function searchHandel(value){
+    setLoading(true);
+    setSearch(value);
+  }
+
   return (
     <div className="container">
+
+      <div className="search-div">
+        <Search placeholder="Search for Images" onSearch={searchHandel} enterButton />
+      </div>
 
       {
         !loading ?
         
-        <div className="cards">
-          {cardsList}
-        </div>
+        <>
+          
+          {
+          cards.length ? 
+          
+            <div className="cards">{cardsList}</div>
+            
+            : 
+            
+            <div style={{padding : '2rem', marginTop: '8rem'}}>
+              <Empty description={false} />
+            </div>
+          }
+
+        </>
         
         :
 
@@ -63,9 +89,11 @@ function App() {
 
       }
 
-      <div className="pagination-div">
+      {
+        cards.length ? <div className="pagination-div">
         <Pagination className="pagination-div" defaultCurrent={page} onChange={changePage} total={total} />
-      </div>
+      </div> : ''
+      }
       
 
     </div>

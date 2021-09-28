@@ -4,11 +4,6 @@
   box-sizing: border-box;
 }
 
-body,
-#root {
-  background-color: rgb(229, 231, 235);
-}
-
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -29,4 +24,8 @@ body,
 .pagination-div {
   text-align: center;
   padding: 2rem;
+}
+
+.search-div {
+  padding-top: 3rem;
 }
